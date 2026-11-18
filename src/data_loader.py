@@ -1,8 +1,10 @@
 # data_loader.py 주요 기능
+
 # 1. load_wav(): WAV 헤더를 직접 읽어 파일 형식을 확인하고, 16-bit PCM 음성 데이터를 NumPy 배열로 변환 및 정규화
 # 2. load_dataset(): FSDD 파일명에서 정답 라벨, 화자, 녹음 번호 추출
 # 3. split_dataset(): 녹음 번호를 기준으로 Train(2400), Validation(300), Test(300) 데이터 분할
 # 4. 실행 및 검증: 전체 데이터 개수와 예시 WAV 파일의 정보를 출력
+
 # 강의 예제와는 달리 stereo가 아닌 mono 16-bit PCM WAV 파일만 지원하며, 샘플링 주파수는 8kHz로 고정되어 있음
 
 from pathlib import Path # 파일이나 폴더의 경로를 편리하게 다루기 위한 라이브러리
