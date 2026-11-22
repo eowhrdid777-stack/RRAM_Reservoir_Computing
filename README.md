@@ -23,9 +23,14 @@ preprocessing.py (F2): 음성 신호의 Mel 특징 추출 및 4비트 RRAM 입�
 rram_model.py (F3, F4): 4비트 펄스 입력에 따른 RRAM conductance 변화 및 256차원 Reservoir State 생성
 readout.py (F5): 256차원 Reservoir State를 입력받아 선형 Readout Layer를 학습하고, Validation Loss를 기준으로 최적 모델 선택 및 숫자 0~9 분류
 evaluation.py: 학습된 Readout의 음성 숫자 인식 정확도, 숫자별 정확도 및 Confusion Matrix 계산 및 시각화
+main.py: FSDD 데이터 입력부터 RRAM Reservoir State 생성, Readout 학습, 성능 평가 및 개별 음성 예측까지 전체 프로그램 통합 실행
 
 ## 4. 설치 및 실행
 
+전체 학습 및 Validation 평가: python src/main.py
+학습: python src/main.py --mode train
+성능 평가: python src/main.py --mode evaluate --split val
+개별 음성 예측: python src/main.py --mode predict --file WAV파일경로
 
 ## 5. 실험 결과
 
@@ -61,6 +66,12 @@ evaluation.py: 학습된 Readout의 음성 숫자 인식 정확도, 숫자별 �
 - 용도: 학습된 Readout 모델의 숫자 인식 성능 평가 및 Confusion Matrix 시각화 코드 작성 보조
 - 주요 프롬프트: 기존 F1~F5 코드를 활용하여 Validation/Test 데이터의 인식 정확도와 숫자별 정확도를 계산하고 Confusion Matrix를 출력하는 Python 코드 작성 요청
 - 검증: 임의 데이터로 모델 불러오기, 정확도 계산 및 10×10 Confusion Matrix 생성 확인. 실제 FSDD 평가 결과는 추가 확인 예정
+
+**Main program**
+- 도구: ChatGPT
+- 용도: F1~F6의 기능을 통합하고 실행 모드에 따라 학습, 평가 및 개별 음성 인식을 수행하는 코드 작성 보조
+- 주요 프롬프트: 기존 F1~F6의 함수와 클래스를 재사용하여 전체 프로그램을 통합 실행하는 main.py 작성 요청
+- 검증: Python 문법 검사 및 실행 옵션 처리 확인. 실제 FSDD 전체 실행 결과는 추가 확인 예정
 
 ## 7. 참고자료
 
