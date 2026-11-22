@@ -8,7 +8,7 @@ data_loader.py: 1-2강 wav: wav header file 및 음성 data 읽기
 preprocessing.py: 1-1강 Sampling Theory: 샘플링 주파수 및 시간축 계산
                   4-1강 Matrix: Mel 필터 행렬과 주파수 특징의 행렬곱
 readout.py: 8강 Deep Learning – CNN: PyTorch 모델 정의, Linear Layer 및 손실 함수와 Optimizer를 이용한 학습·평가 과정
-
+evaluation.py: 8강 Deep Learning – CNN: 학습된 모델의 예측 결과 및 정확도 평가
 
 ## 2. 개발 환경
 
@@ -22,6 +22,7 @@ data_loader.py (F1): WAV 헤더 분석 및 FSDD 데이터 분할
 preprocessing.py (F2): 음성 신호의 Mel 특징 추출 및 4비트 RRAM 입력 펄스 생성
 rram_model.py (F3, F4): 4비트 펄스 입력에 따른 RRAM conductance 변화 및 256차원 Reservoir State 생성
 readout.py (F5): 256차원 Reservoir State를 입력받아 선형 Readout Layer를 학습하고, Validation Loss를 기준으로 최적 모델 선택 및 숫자 0~9 분류
+evaluation.py: 학습된 Readout의 음성 숫자 인식 정확도, 숫자별 정확도 및 Confusion Matrix 계산 및 시각화
 
 ## 4. 설치 및 실행
 
@@ -55,10 +56,20 @@ readout.py (F5): 256차원 Reservoir State를 입력받아 선형 Readout Layer�
 - 주요 프롬프트: 기존 F1~F3 코드를 연결하여 256차원 Reservoir State를 입력받고, 8강 CNN의 학습 구조를 활용하는 선형 Readout 구현 요청
 - 검증: 임의 입력 데이터에서 학습 및 예측 기능과 출력 크기 확인. 실제 FSDD 데이터 학습 결과는 추가 확인 예정
 
+**F6. Performance evaluation**
+- 도구: ChatGPT
+- 용도: 학습된 Readout 모델의 숫자 인식 성능 평가 및 Confusion Matrix 시각화 코드 작성 보조
+- 주요 프롬프트: 기존 F1~F5 코드를 활용하여 Validation/Test 데이터의 인식 정확도와 숫자별 정확도를 계산하고 Confusion Matrix를 출력하는 Python 코드 작성 요청
+- 검증: 임의 데이터로 모델 불러오기, 정확도 계산 및 10×10 Confusion Matrix 생성 확인. 실제 FSDD 평가 결과는 추가 확인 예정
+
 ## 7. 참고자료
 
 - Software Lab 강의자료 (1-1강, 1-2강, 4강, 8강)
-- 머신러닝개론 강의자료 : 신경망의 학습 과정, 손실 함수 및 최적화 알고리즘 참고
+- 머신러닝개론 강의자료:
+    Ch.6 Linear Two-Class Classification: 분류 정확도 및 Confusion Matrix를 이용한 성능 평가 참고
+    Ch.7 Linear Multi-Class Classification: 선형 다중 클래스 분류 및 Cross-Entropy Loss 참고
+    Ch.9 Feature Engineering and Selection: 음성 특징 추출 및 정규화 개념 참고
+    Ch.13 Neural Networks: 신경망의 역전파 및 가중치 최적화 과정 참고
 - [Free Spoken Digit Dataset](https://github.com/Jakobovski/free-spoken-digit-dataset)
 - Du et al., *Reservoir computing using dynamic memristors for temporal information processing*, Nature Communications (2017)
 - Ielmini, D., & Pedretti, G. (2025). *Resistive Switching Random-Access Memory (RRAM): Applications and Requirements for Memory and Computing.* Chemical Reviews, 125(12), 5584–5625. https://doi.org/10.1021/acs.chemrev.4c00845 (Section 5.3, Figure 26 및 식 (11)~(15): 상태 의존적 비선형 컨덕턴스 업데이트 특성 참고)
