@@ -1,12 +1,10 @@
 # readout.py 주요 기능
-
 # 1. prepare_data(): WAV 음성을 256차원 Reservoir State로 변환하고 숫자 라벨과 묶음
 # 2. Readout(): 256차원 입력을 10개 숫자 클래스의 점수로 변환하는 선형 계층
 # 3. calculate_accuracy(): 모델이 예측한 숫자와 실제 정답을 비교하여 정확도 계산
 # 4. train_readout(): Train 데이터로 Readout 가중치를 학습하고 Validation으로 검증
 # 5. predict_digit(): 학습된 Readout으로 음성 하나의 숫자 예측
 # 6. 실행 및 검증: 학습 로그 및 Loss/Accuracy 그래프 출력, 최적 모델 저장
-
 # Reservoir의 가중치는 학습하지 않고 Readout의 가중치와 편향만 학습함
 # Test 데이터는 학습과 모델 선택에 사용하지 않으며, F5에서 최종 평가 예정
 
@@ -30,14 +28,14 @@ LEARNING_RATE = 0.001 # Adam Optimizer의 학습률
 SEED = 42 # 동일한 조건에서 실험을 재현하기 위한 난수 시드
 
 
-def prepare_data(dataset): # WAV 데이터를 Reservoir State와 정답 라벨 배열로 변환
+def prepare_data(dataset, device_windows=None): # WAV 데이터를 Reservoir State와 정답 라벨 배열로 변환
     states = []
     labels = []
 
     for item in dataset:
         sample_rate, signal = load_wav(item["path"])
         _, pulses = signal_to_pulses(signal, sample_rate)
-        state = generate_reservoir_states(pulses)
+        state = generate_reservoir_states(pulses, device_windows=device_windows)
         if state.shape != (INPUT_SIZE,):
             raise ValueError(f"Reservoir State 크기가 ({INPUT_SIZE},)가 아닙니다: {item['path']}")
 

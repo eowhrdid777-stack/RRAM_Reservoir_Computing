@@ -9,6 +9,7 @@ preprocessing.py: 1-1강 Sampling Theory: 샘플링 주파수 및 시간축 계�
                   4-1강 Matrix: Mel 필터 행렬과 주파수 특징의 행렬곱
 readout.py: 8강 Deep Learning – CNN: PyTorch 모델 정의, Linear Layer 및 손실 함수와 Optimizer를 이용한 학습·평가 과정
 evaluation.py: 8강 Deep Learning – CNN: 학습된 모델의 예측 결과 및 정확도 평가
+d2d_variation.py: 5강 Random Processing – Gaussian 난수를 이용한 소자별 Conductance Window 편차 생성 및 통계 분석
 
 ## 2. 개발 환경
 
@@ -20,10 +21,11 @@ evaluation.py: 8강 Deep Learning – CNN: 학습된 모델의 예측 결과 및
 
 data_loader.py (F1): WAV 헤더 분석 및 FSDD 데이터 분할
 preprocessing.py (F2): 음성 신호의 Mel 특징 추출 및 4비트 RRAM 입력 펄스 생성
-rram_model.py (F3, F4): 4비트 펄스 입력에 따른 RRAM conductance 변화 및 256차원 Reservoir State 생성
+rram_model.py (F3, F4): 4비트 펄스 입력에 따른 RRAM conductance 변화 및 256차원 Reservoir State 생성, 소자별 Gmin/Gmax 편차 생성 및 Reservoir State 계산
 readout.py (F5): 256차원 Reservoir State를 입력받아 선형 Readout Layer를 학습하고, Validation Loss를 기준으로 최적 모델 선택 및 숫자 0~9 분류
 evaluation.py: 학습된 Readout의 음성 숫자 인식 정확도, 숫자별 정확도 및 Confusion Matrix 계산 및 시각화
 main.py: FSDD 데이터 입력부터 RRAM Reservoir State 생성, Readout 학습, 성능 평가 및 개별 음성 예측까지 전체 프로그램 통합 실행
+d2d_variation.py: RRAM 소자별 Conductance Window의 D2D Variation을 모델링하고, Variation 수준에 따른 음성 숫자 인식 정확도 분석
 
 ## 4. 설치 및 실행
 
@@ -73,9 +75,16 @@ main.py: FSDD 데이터 입력부터 RRAM Reservoir State 생성, Readout 학습
 - 주요 프롬프트: 기존 F1~F6의 함수와 클래스를 재사용하여 전체 프로그램을 통합 실행하는 main.py 작성 요청
 - 검증: Python 문법 검사 및 실행 옵션 처리 확인. 실제 FSDD 전체 실행 결과는 추가 확인 예정
 
+**S1. RRAM D2D Variation**
+
+- 도구: ChatGPT
+- 용도: 소자별 Conductance Window 편차 모델링 및 인식 정확도 비교 실험 코드 작성 보조
+- 주요 프롬프트: 256개 RRAM 소자에 서로 다른 Gmin/Gmax를 부여하고, D2D Variation 수준에 따른 컨덕턴스 응답과 Validation Accuracy를 비교하는 코드 작성 요청
+- 검증: Variation 0%에서 기존 모델과의 출력 일치 확인 및 256개 소자의 컨덕턴스 변화 시각화
+
 ## 7. 참고자료
 
-- Software Lab 강의자료 (1-1강, 1-2강, 4강, 8강)
+- Software Lab 강의자료 (1-1강, 1-2강, 4강, 5강, 8강)
 - 머신러닝개론 강의자료:
     Ch.6 Linear Two-Class Classification: 분류 정확도 및 Confusion Matrix를 이용한 성능 평가 참고
     Ch.7 Linear Multi-Class Classification: 선형 다중 클래스 분류 및 Cross-Entropy Loss 참고
