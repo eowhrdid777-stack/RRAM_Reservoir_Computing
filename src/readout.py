@@ -22,7 +22,7 @@ from rram_model import generate_reservoir_states # F3의 RRAM Reservoir State �
 
 INPUT_SIZE = 256 # 한 WAV에서 생성되는 Reservoir State의 차원 수
 NUM_CLASSES = 10 # 숫자 0~9에 해당하는 출력 클래스 수
-EPOCHS = 100 # 전체 Train 데이터를 반복 학습하는 횟수
+EPOCHS = 300 # 전체 Train 데이터를 반복 학습하는 횟수
 BATCH_SIZE = 64 # 한 번에 학습할 음성 데이터 수
 LEARNING_RATE = 0.001 # Adam Optimizer의 학습률
 SEED = 42 # 동일한 조건에서 실험을 재현하기 위한 난수 시드

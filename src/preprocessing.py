@@ -29,7 +29,7 @@ HOP_LENGTH = 128 # FFT 시간 구간의 이동 간격(샘플), FFT_SIZE/2로 설
 N_MELS = 32 # Mel 주파수 채널 수, 129개의 주파수 성분을 32개의 Mel 채널로 변환
 N_FRAMES = 32 # 음성마다 사용할 시간 구간 수, wav 파일 길이가 다르므로 32개의 시간 구간으로 보간하여 동일한 크기로 변환
 BITS_PER_PULSE = 4 # 하나의 RRAM 입력 시퀀스를 구성하는 비트 수
-THRESHOLD = 0.5 # 정규화된 Mel 특징을 0과 1로 나누는 기준값
+THRESHOLD = 0.2 # 정규화된 Mel 특징을 0과 1로 나누는 기준값
 # T = FFT_SIZE / SAMPLE_RATE = 0.032초, H = HOP_LENGTH / SAMPLE_RATE = 0.016초, N_FRAMES * H = 0.512초
 
 def normalize_signal(signal): # 음성의 최대 절댓값을 기준으로 진폭을 정규화
