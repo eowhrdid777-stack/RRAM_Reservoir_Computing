@@ -14,7 +14,7 @@ import numpy as np # 지수함수 및 Reservoir State 배열 연산
 
 G_MIN = 0.0 # 정규화된 최소 컨덕턴스(실제 단위 S가 아님)
 G_MAX = 1.0 # 정규화된 최대 컨덕턴스
-TAU = 3.0 # 컨덕턴스 감쇠 시정수(임의 시간 단위)
+TAU = 10.0 # 컨덕턴스 감쇠 시정수(임의 시간 단위)
 DELTA_T = 1.0 # 비트 입력 간 시간 간격(임의 시간 단위)
 ALPHA = 0.35 # 입력 비트가 1일 때 컨덕턴스 증가 강도
 NONLINEARITY = 1.5 # 컨덕턴스 증가의 비선형성 지수
@@ -102,31 +102,49 @@ def generate_reservoir_states(pulses, device_windows=None): # 256개 소자별 �
     return states
 
 
-# 테스트 코드: 대표 패턴 4개의 응답을 시각화하고 256차원 출력 검증
+# 테스트 코드: 0000부터 1111까지 16개 패턴의 응답을 시각화하고 256차원 출력 검증
 if __name__ == "__main__":
-    # 0000: 감쇠만 발생 / 0110과 1001: 입력 순서 비교 / 1111: 연속 입력
-    selected_patterns = [[0, 0, 0, 0], [0, 1, 1, 0], [1, 0, 0, 1], [1, 1, 1, 1]]
+    # 4비트로 만들 수 있는 모든 입력 패턴 생성 (0000~1111)
+    all_patterns = [[int(bit) for bit in f"{number:04b}"] for number in range(16)]
+    pattern_labels = []
+    final_values = []
 
-    plt.figure(figsize=(8, 5))
-    for pattern in selected_patterns:
+    # 왼쪽: 단계별 컨덕턴스 변화 / 오른쪽: 패턴별 최종 컨덕턴스
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+    for pattern in all_patterns:
         final_g, history = process_sequence(pattern)
         label = "".join(str(bit) for bit in pattern)
-        print(f"입력 패턴: {label}, 최종 컨덕턴스: {final_g:.4f}")
-        plt.plot(range(BITS_PER_PULSE + 1), history, marker="o", linewidth=2, label=label)
+        pattern_labels.append(label)
+        final_values.append(final_g)
+        print(f"입력 패턴: {label}, 최종 컨덕턴스: {final_g:.6f}")
 
-    # 출력 크기 검증은 기존처럼 16개 패턴을 모두 사용
-    all_patterns = [[int(bit) for bit in f"{number:04b}"] for number in range(16)]
+        # 각 패턴에서 입력 비트 4개를 순서대로 적용했을 때의 변화
+        axes[0].plot(range(BITS_PER_PULSE + 1), history,
+                     marker="o", linewidth=1.2, markersize=3, label=label)
+
+    axes[0].set_title("Conductance Response of 16 Patterns")
+    axes[0].set_xlabel("Input step")
+    axes[0].set_ylabel("Normalized conductance")
+    axes[0].set_xticks(range(BITS_PER_PULSE + 1))
+    axes[0].set_ylim(0, 1)
+    axes[0].grid(True, alpha=0.3)
+    axes[0].legend(title="4-bit pattern", fontsize=8, ncol=2)
+
+    # 패턴에 따른 최종 컨덕턴스 차이를 한눈에 비교
+    axes[1].bar(pattern_labels, final_values)
+    axes[1].set_title("Final Conductance by Input Pattern")
+    axes[1].set_xlabel("4-bit input pattern")
+    axes[1].set_ylabel("Normalized conductance")
+    axes[1].set_ylim(0, 1)
+    axes[1].tick_params(axis="x", labelrotation=60)
+    axes[1].grid(axis="y", alpha=0.3)
+
+    # 기존과 동일하게 256개 펄스를 입력해 Reservoir State 크기 검증
     test_pulses = np.tile(np.array(all_patterns), (16, 1))
     states = generate_reservoir_states(test_pulses)
     print("입력 펄스 배열 크기:", test_pulses.shape)
     print("Reservoir State 크기:", states.shape)
 
-    plt.title("RRAM Conductance Response (4 Representative Patterns)")
-    plt.xlabel("Input step")
-    plt.ylabel("Normalized conductance")
-    plt.xticks(range(BITS_PER_PULSE + 1))
-    plt.ylim(0, 1)
-    plt.grid(True, alpha=0.3)
-    plt.legend(title="4-bit pattern")
     plt.tight_layout()
     plt.show()
