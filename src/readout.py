@@ -22,6 +22,8 @@ from rram_model import generate_reservoir_states # F3의 RRAM Reservoir State �
 
 INPUT_SIZE = 576 # 한 WAV에서 생성되는 Reservoir State의 차원 수
 NUM_CLASSES = 10 # 숫자 0~9에 해당하는 출력 클래스 수
+
+HIDDEN_SIZE = 128 # Readout의 은닉층 크기
 EPOCHS = 300 # 전체 Train 데이터를 반복 학습하는 횟수
 BATCH_SIZE = 64 # 한 번에 학습할 음성 데이터 수
 LEARNING_RATE = 0.001 # Adam Optimizer의 학습률
@@ -51,14 +53,18 @@ def prepare_data(dataset, device_windows=None): # WAV 데이터를 Reservoir Sta
     return x, y
 
 
-class Readout(nn.Module): # Reservoir State를 숫자 0~9의 점수로 변환하는 선형 분류기
+class Readout(nn.Module): # 은닉층 1개를 사용하는 MLP 분류기
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(INPUT_SIZE, NUM_CLASSES)
+        self.fc1 = nn.Linear(INPUT_SIZE, HIDDEN_SIZE) # 576 → 128
+        self.relu = nn.ReLU() # 비선형 활성화 함수
+        self.fc2 = nn.Linear(HIDDEN_SIZE, NUM_CLASSES) # 128 → 10
 
-    def forward(self, x): # y = Wx + b (Softmax 적용 전 점수 반환)
-        return self.linear(x)
-
+    def forward(self, x):
+        x = self.fc1(x) # 입력 특징을 은닉층으로 전달
+        x = self.relu(x) # 비선형성 적용
+        x = self.fc2(x) # 숫자별 분류 점수 계산
+        return x
 
 def calculate_accuracy(model, x, y): # 정답과 예측값이 일치한 비율 계산
     model.eval() # 평가 모드로 전환
