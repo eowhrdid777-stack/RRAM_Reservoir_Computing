@@ -26,7 +26,7 @@ from data_loader import load_dataset, load_wav # data_loader에 작성한 WAV �
 SAMPLE_RATE = 8000 # FSDD의 샘플링 주파수(Hz), 상수로 고정
 FFT_SIZE = 256 # 한 번의 FFT에서 분석하는 샘플 개수
 HOP_LENGTH = 128 # FFT 시간 구간의 이동 간격(샘플), FFT_SIZE/2로 설정하여 50% 오버랩
-N_MELS = 32 # Mel 주파수 채널 수, 129개의 주파수 성분을 32개의 Mel 채널로 변환
+N_MELS = 48 # Mel 주파수 채널 수, 129개의 주파수 성분을 32개의 Mel 채널로 변환
 N_FRAMES = 32 # 음성마다 사용할 시간 구간 수, wav 파일 길이가 다르므로 32개의 시간 구간으로 보간하여 동일한 크기로 변환
 BITS_PER_PULSE = 4 # 하나의 RRAM 입력 시퀀스를 구성하는 비트 수
 THRESHOLD = 0.2 # 정규화된 Mel 특징을 0과 1로 나누는 기준값
