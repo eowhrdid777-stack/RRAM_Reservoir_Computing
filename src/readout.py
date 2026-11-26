@@ -28,6 +28,7 @@ EPOCHS = 300 # 전체 Train 데이터를 반복 학습하는 횟수
 BATCH_SIZE = 64 # 한 번에 학습할 음성 데이터 수
 LEARNING_RATE = 0.001 # Adam Optimizer의 학습률
 WEIGHT_DECAY = 0.001 # 가중치 크기를 억제하여 과적합 완화
+DROPOUT = 0.1
 SEED = 42 # 동일한 조건에서 실험을 재현하기 위한 난수 시드
 
 
@@ -59,11 +60,13 @@ class Readout(nn.Module): # 은닉층 1개를 사용하는 MLP 분류기
         super().__init__()
         self.fc1 = nn.Linear(INPUT_SIZE, HIDDEN_SIZE) # 576 → 128
         self.relu = nn.ReLU() # 비선형 활성화 함수
+        self.dropout = nn.Dropout(DROPOUT) 
         self.fc2 = nn.Linear(HIDDEN_SIZE, NUM_CLASSES) # 128 → 10
 
     def forward(self, x):
         x = self.fc1(x) # 입력 특징을 은닉층으로 전달
         x = self.relu(x) # 비선형성 적용
+        x = self.dropout(x) # 과적합 방지를 위해 일부 뉴런을 무작위로 끔
         x = self.fc2(x) # 숫자별 분류 점수 계산
         return x
 
