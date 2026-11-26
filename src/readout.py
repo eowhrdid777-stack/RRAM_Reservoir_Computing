@@ -27,6 +27,7 @@ HIDDEN_SIZE = 128 # Readout의 은닉층 크기
 EPOCHS = 300 # 전체 Train 데이터를 반복 학습하는 횟수
 BATCH_SIZE = 64 # 한 번에 학습할 음성 데이터 수
 LEARNING_RATE = 0.001 # Adam Optimizer의 학습률
+WEIGHT_DECAY = 0.001 # 가중치 크기를 억제하여 과적합 완화
 SEED = 42 # 동일한 조건에서 실험을 재현하기 위한 난수 시드
 
 
@@ -83,7 +84,11 @@ def train_readout(model, train_x, train_y, val_x, val_y,
         raise ValueError("Train과 Validation 데이터는 비어 있으면 안 됩니다.")
 
     criterion = nn.CrossEntropyLoss() # 숫자 분류에서 사용하는 손실 함수
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = torch.optim.Adam(
+    model.parameters(),
+    lr=learning_rate,
+    weight_decay=WEIGHT_DECAY
+    )
     history = {"train_loss": [], "train_accuracy": [], "val_loss": [], "val_accuracy": []}
     best_val_loss = float("inf")
     best_weights = None
