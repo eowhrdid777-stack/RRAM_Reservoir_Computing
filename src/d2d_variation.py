@@ -1,4 +1,5 @@
 # d2d_variation.py 주요 기능
+
 # 1. RRAM 소자 576개의 G_MIN/G_MAX에 D2D Variation 적용
 # 2. Variation 수준(0%, 5%, 10%, 20%)별 Validation Accuracy 비교
 # 3. 소자별 특성은 Train/Validation 전체에서 고정하고 난수 시드별 반복
