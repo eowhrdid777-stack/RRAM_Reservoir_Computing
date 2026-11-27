@@ -1,10 +1,10 @@
 # d2d_variation.py 주요 기능
-# 1. RRAM 소자 256개의 G_MIN/G_MAX에 D2D Variation 적용
+# 1. RRAM 소자 576개의 G_MIN/G_MAX에 D2D Variation 적용
 # 2. Variation 수준(0%, 5%, 10%, 20%)별 Validation Accuracy 비교
 # 3. 소자별 특성은 Train/Validation 전체에서 고정하고 난수 시드별 반복
 # 4. retrain: 각 Variation 조건에서 Readout 재학습
 # 5. fixed: 이상적인 소자로 학습한 Readout을 고정하고 Variation 적용
-# 6. 256개 소자의 컨덕턴스 응답을 한 그래프에 표시
+# 6. 576개 소자의 컨덕턴스 응답을 한 그래프에 표시
 # 7. 평균/표준편차를 CSV와 그래프로 저장 (Test 데이터는 사용하지 않음)
 
 from pathlib import Path # 결과 저장 경로 처리
@@ -23,11 +23,11 @@ from readout import Readout, prepare_data, train_readout, calculate_accuracy # F
 PROJECT_DIR = Path(__file__).resolve().parent.parent # src 폴더 상위의 프로젝트 경로
 DATA_DIR = PROJECT_DIR / "data" / "recordings"
 RESULT_DIR = PROJECT_DIR / "results" / "d2d"
-NUM_DEVICES = 256 # Reservoir State 벡터 차원
+NUM_DEVICES = 576 # Reservoir State 벡터 차원
 
 
 
-def plot_device_responses(windows, variation, seed, pattern=(1, 1, 1, 1), show=False): # 256개 소자 응답을 한 그래프에 표시
+def plot_device_responses(windows, variation, seed, pattern=(1, 1, 1, 1), show=False): # 576개 소자 응답을 한 그래프에 표시
     # 모든 소자에 동일한 펄스를 입력해야 소자 간 차이만 비교할 수 있음
     x = np.arange(BITS_PER_PULSE + 1)
     fig, ax = plt.subplots(figsize=(9, 5.5))
@@ -38,11 +38,11 @@ def plot_device_responses(windows, variation, seed, pattern=(1, 1, 1, 1), show=F
         histories.append(history)
         ax.plot(x, history, linewidth=0.65, alpha=0.18, color="tab:blue")
 
-    # 256개 곡선이 겹칠 때 기준이 보이도록 평균 응답도 표시
+    # 576개 곡선이 겹칠 때 기준이 보이도록 평균 응답도 표시
     mean_history = np.mean(histories, axis=0)
-    ax.plot(x, mean_history, color="tab:red", linewidth=2.5, label="Mean of 256 devices")
+    ax.plot(x, mean_history, color="tab:red", linewidth=2.5, label="Mean of 576 devices")
     pattern_label = "".join(map(str, pattern))
-    ax.set(title=f"D2D {variation * 100:g}% | 256 RRAM responses | Pulse {pattern_label}",
+    ax.set(title=f"D2D {variation * 100:g}% | 576 RRAM responses | Pulse {pattern_label}",
            xlabel="Input step", ylabel="Conductance (normalized units)")
     ax.set_xticks(x)
     ax.grid(True, alpha=0.25)
@@ -53,7 +53,7 @@ def plot_device_responses(windows, variation, seed, pattern=(1, 1, 1, 1), show=F
     variation_label = f"{variation * 100:g}".replace(".", "p")
     save_path = RESULT_DIR / f"d2d_conductance_{variation_label}pct_seed{seed}.png"
     fig.savefig(save_path, dpi=180)
-    print("256개 소자 응답 그래프 저장:", save_path)
+    print("576개 소자 응답 그래프 저장:", save_path)
     if show:
         plt.show()
     plt.close(fig)
@@ -82,7 +82,7 @@ def run_experiment(variations, repeats, mode, epochs, seed, show=False): # D2D �
         for variation in variations:
             windows = create_device_windows(NUM_DEVICES, variation=variation, seed=run_seed)
             print(f"\n반복 {repeat + 1}/{repeats} | D2D: {variation * 100:g}% | mode: {mode}")
-            if repeat == 0: # 같은 Variation 수준에서는 첫 번째 시드의 256개 소자만 시각화
+            if repeat == 0: # 같은 Variation 수준에서는 첫 번째 시드의 576개 소자만 시각화
                 plot_device_responses(windows, variation, run_seed, show=show)
 
             print("G_MIN 평균:", round(float(windows[:, 0].mean()), 4),
@@ -144,7 +144,7 @@ def main(): # 실행 조건 입력 및 실험 진행
                         help="retrain: 조건별 재학습 / fixed: Baseline Readout 고정")
     parser.add_argument("--epochs", type=int, default=100, help="Readout 학습 Epoch")
     parser.add_argument("--seed", type=int, default=42, help="초기 난수 시드")
-    parser.add_argument("--show", action="store_true", help="256개 소자 응답 그래프 창도 표시")
+    parser.add_argument("--show", action="store_true", help="576개 소자 응답 그래프 창도 표시")
     args = parser.parse_args()
     if args.repeats <= 0 or args.epochs <= 0 or not args.variations or any(v < 0 for v in args.variations):
         parser.error("repeats, epochs는 양수, variations는 0 이상이어야 합니다.")
